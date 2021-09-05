@@ -49,8 +49,34 @@ describe('TagTemplateDetails', () => {
       screen.getByRole('heading', { level: 1, name: /tagged as "Design"/ })
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('link', { name: /Humane Typography/ })
+      screen.getByRole('link', {
+        name: 'Humane Typography in the Digital Age',
+      })
     ).toBeInTheDocument()
+  })
+})
+
+describe('empty lists', () => {
+  it('says so when a tag has no articles', () => {
+    render(
+      <TagTemplateDetails
+        data={{ allKontentItemArticle: { nodes: [] } }}
+        pageContext={{ tagTitle: 'Design' }}
+      />
+    )
+    expect(screen.getByText('No articles with this tag yet.')).toBeVisible()
+  })
+
+  it('says so when there are no tags at all', () => {
+    render(
+      <TagsRoute
+        data={{
+          kontentItemSiteMetadata: siteMetadata,
+          allKontentItemTag: { nodes: [] },
+        }}
+      />
+    )
+    expect(screen.getByText('No tags yet.')).toBeVisible()
   })
 })
 

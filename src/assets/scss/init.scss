@@ -4,3 +4,10 @@
 @import 'mixins';
 @import 'base';
 @import 'pages';
+
+@import '../../components/Sidebar/style';
+@import '../../components/Menu/style';
+@import '../../components/Links/style';
+@import '../../components/Article/style';
+@import '../../components/ArticleTemplateDetails/style';
+@import '../../components/PageTemplateDetails/style';

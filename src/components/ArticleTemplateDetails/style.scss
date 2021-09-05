@@ -37,6 +37,11 @@
     }
     & a {
       text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    & figure img {
+      border-radius: 2px;
     }
     & .gatsby-highlight {
       max-width: $layout-article-single-width;
@@ -67,6 +72,7 @@
     }
   }
   &__date {
+    color: $color-gray;
     max-width: $layout-article-single-width;
     margin-left: auto;
     margin-right: auto;
@@ -81,18 +87,18 @@
         display: inline-block;
         margin: 10px 5px;
         &-link {
-          background: $color-gray-bg;
+          display: inline-block;
+          font-family: $typographic-ui-font-family;
+          font-size: $typographic-small-font-size;
           text-decoration: none;
-          border: 0;
-          border-radius: 3px;
-          color: lighten($color-base, 20%);
-          line-height: $typographic-base-line-height;
-          padding: 8px 16px;
-          &:hover,
-          &:focus {
-            color: $color-base;
-            background: darken($color-gray-bg, 5%);
-            border: 0;
+          border: 1px solid $color-gray-border;
+          border-radius: 999px;
+          color: $color-gray;
+          line-height: 1.4;
+          padding: 6px 14px;
+          &:hover {
+            color: $color-primary;
+            border-color: $color-primary;
           }
         }
       }
@@ -102,22 +108,21 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    max-width: 90px;
-    font-size: $typographic-base-font-size;
+    max-width: 130px;
     padding: 0 16px;
     height: 35px;
     line-height: 35px;
     text-align: center;
-    color: lighten($color-base, 20%);
+    font-family: $typographic-ui-font-family;
+    font-size: $typographic-small-font-size;
+    color: $color-base;
     background: $color-gray-bg;
-    font-weight: 400;
-    border-radius: 3px;
+    font-weight: 600;
+    border-radius: 999px;
     @include margin-top(1);
-    &:hover,
-    &:focus {
-      color: $color-base;
-      background: darken($color-gray-bg, 5%);
-      border: 0;
+    &:hover {
+      color: $color-paper;
+      background: $color-primary;
     }
   }
 }

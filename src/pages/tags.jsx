@@ -12,12 +12,15 @@ const TagsRoute = ({ data }) => {
     <Layout>
       <div>
         <Sidebar />
-        <div className="content">
+        <main className="content" id="main">
           <div className="content__inner">
             <div className="page">
               <h1 className="page__title">Tags</h1>
               <div className="page__body">
                 <div className="tags">
+                  {tags.length === 0 && (
+                    <p className="empty-state">No tags yet.</p>
+                  )}
                   <ul className="tags__list">
                     {tags.map((tag) => (
                       <li
@@ -40,7 +43,7 @@ const TagsRoute = ({ data }) => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </Layout>
   )

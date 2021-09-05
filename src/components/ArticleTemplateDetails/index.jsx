@@ -4,7 +4,6 @@ import { RichTextElement } from '@kontent-ai/gatsby-components'
 import { formatLongDate, toDateAttribute } from '../../utils/date'
 import { tagPath } from '../../utils/paths'
 import { profileUrl } from '../../utils/profiles'
-import './style.scss'
 
 const ArticleTemplateDetails = ({ data }) => {
   const subtitle = data.kontentItemSiteMetadata.elements.subtitle.value
@@ -17,11 +16,12 @@ const ArticleTemplateDetails = ({ data }) => {
     <div>
       <div>
         <Link className="article-single__home-button" to="/">
-          All Articles
+          All articles
         </Link>
       </div>
-      <div
+      <main
         className="article-single"
+        id="main"
         data-kontent-item-id={data.kontentItemArticle.system.id}
       >
         <div className="article-single__inner">
@@ -52,7 +52,7 @@ const ArticleTemplateDetails = ({ data }) => {
         <div className="article-single__footer">
           {tags.length > 0 && (
             <div className="article-single__tags">
-              <ul className="article-single__tags-list">
+              <ul className="article-single__tags-list" aria-label="Tags">
                 {tags.map((tag) => (
                   <li
                     className="article-single__tags-list-item"
@@ -69,7 +69,7 @@ const ArticleTemplateDetails = ({ data }) => {
               </ul>
             </div>
           )}
-          <hr />
+          <hr aria-hidden="true" />
           <p className="article-single__footer-text">
             {subtitle}
             {twitterUrl && (
@@ -79,7 +79,7 @@ const ArticleTemplateDetails = ({ data }) => {
             )}
           </p>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

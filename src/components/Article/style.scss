@@ -2,8 +2,11 @@
 @import '../../assets/scss/mixins';
 
 .article {
-  @include margin-bottom(1.25);
+  @include padding(0, 0, 1, 0);
+  @include margin-bottom(1);
+  border-bottom: 1px solid $color-gray-border;
   &:last-child {
+    border-bottom: 0;
     @include margin-bottom(0.5);
   }
   &__title {
@@ -13,10 +16,8 @@
     @include margin-bottom(0.5);
     &-link {
       color: $color-base;
-      &:hover,
-      &:focus {
-        color: $color-base;
-        border-bottom: 1px solid $color-base;
+      &:hover {
+        color: $color-primary;
       }
     }
   }
@@ -26,35 +27,45 @@
     @include margin-bottom(0.75);
   }
   &__meta {
+    font-family: $typographic-ui-font-family;
+    font-size: $typographic-small-font-size;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     &-time {
-      font-size: $typographic-small-font-size;
-      color: $color-base;
-      font-weight: 500;
-      text-transform: uppercase;
+      color: $color-primary;
+      font-weight: 600;
     }
     &-divider {
-      margin: 0 5px;
+      display: inline-block;
+      width: 16px;
+      height: 1px;
+      margin: 0 8px;
+      vertical-align: middle;
+      background: $color-gray-border;
     }
     &-category {
       &-link {
-        font-size: $typographic-small-font-size;
-        color: $color-secondary;
-        font-weight: 500;
-        text-transform: uppercase;
-        &:hover,
-        &:focus {
+        color: $color-gray;
+        font-weight: 600;
+        &:hover {
           color: $color-primary;
         }
+      }
+      & + & {
+        margin-left: 8px;
       }
     }
   }
   &__readmore {
-    font-size: $typographic-base-font-size;
+    font-family: $typographic-ui-font-family;
+    font-size: $typographic-small-font-size;
+    font-weight: 600;
     color: $color-primary;
-    &:hover,
-    &:focus {
-      color: $color-primary;
-      border-bottom: 1px solid $color-primary;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    &:hover {
+      color: $color-primary-dark;
     }
   }
 }

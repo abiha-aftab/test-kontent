@@ -8,10 +8,10 @@ const NotFoundRoute = ({ data }) => (
   <Layout>
     <div>
       <Sidebar />
-      <div className="content">
+      <main className="content" id="main">
         <div className="content__inner">
           <div className="page">
-            <h1 className="page__title">NOT FOUND</h1>
+            <h1 className="page__title">Page not found</h1>
             <div className="page__body">
               <p>
                 {
@@ -22,7 +22,7 @@ const NotFoundRoute = ({ data }) => (
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </Layout>
 )

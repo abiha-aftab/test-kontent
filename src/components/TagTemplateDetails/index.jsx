@@ -1,21 +1,22 @@
 import React from 'react'
-import Article from '../Article'
+import ArticleList from '../ArticleList'
 
 const TagTemplateDetails = ({ data, pageContext }) => (
-  <div className="content">
+  <main className="content" id="main">
     <div className="content__inner">
       <div className="page">
         <h1 className="page__title">
           All Articles tagged as &quot;{pageContext.tagTitle}&quot;
         </h1>
         <div className="page__body">
-          {data.allKontentItemArticle.nodes.map((article) => (
-            <Article data={article} key={article.elements.slug.value} />
-          ))}
+          <ArticleList
+            articles={data.allKontentItemArticle.nodes}
+            emptyMessage="No articles with this tag yet."
+          />
         </div>
       </div>
     </div>
-  </div>
+  </main>
 )
 
 export default TagTemplateDetails

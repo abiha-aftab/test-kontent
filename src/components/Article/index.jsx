@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'gatsby'
 import { formatMonthYear, toDateAttribute } from '../../utils/date'
 import { articlePath, categoryPath } from '../../utils/paths'
-import './style.scss'
 
 const Article = ({ data }) => {
   const { elements, system } = data
@@ -12,7 +11,7 @@ const Article = ({ data }) => {
   const path = articlePath(elements.slug.value)
 
   return (
-    <div className="article" data-kontent-item-id={system && system.id}>
+    <article className="article" data-kontent-item-id={system && system.id}>
       <div className="article__meta">
         <time
           className="article__meta-time"
@@ -21,7 +20,9 @@ const Article = ({ data }) => {
         >
           {formatMonthYear(date)}
         </time>
-        <span className="article__meta-divider" />
+        {categories.length > 0 && (
+          <span className="article__meta-divider" aria-hidden="true" />
+        )}
         <span
           data-kontent-element-codename="category"
           data-kontent-add-button
@@ -55,9 +56,9 @@ const Article = ({ data }) => {
         {elements.description.value}
       </p>
       <Link className="article__readmore" to={path}>
-        Read
+        Read<span className="visually-hidden"> {elements.title.value}</span>
       </Link>
-    </div>
+    </article>
   )
 }
 

@@ -7,6 +7,7 @@ html {
 }
 
 body {
+  background: $color-paper;
   font-family: $typographic-font-family;
   color: $typographic-base-font-color;
   line-height: $typographic-base-line-height;
@@ -24,8 +25,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $typographic-font-family;
-  font-weight: 500;
+  font-family: $typographic-heading-font-family;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 h1 {
@@ -103,19 +105,65 @@ a {
   color: $typographic-link-p-font-color;
   text-decoration: none;
   &:hover,
-  &:focus,
   &:active {
     color: $typographic-link-s-font-color;
   }
 }
 
+:focus-visible {
+  outline: 2px solid $color-primary;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: rgba($color-primary, 0.18);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  padding: 8px 14px;
+  background: $color-base;
+  color: $color-paper;
+  font-family: $typographic-ui-font-family;
+  font-size: $typographic-small-font-size;
+  transform: translateY(-200%);
+  &:focus {
+    transform: none;
+    color: $color-paper;
+  }
+}
+
+.empty-state {
+  color: $color-gray;
+  font-style: italic;
+}
+
 b,
 strong {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 ul {
   list-style: square;
+  & li::marker {
+    color: $color-primary;
+  }
   @include margin-bottom(1);
   & li {
     padding: 0 5px;
@@ -142,7 +190,7 @@ figure {
 figcaption {
   @include line-height(0.75);
   @include margin-top(0.25);
-  color: $color-base;
+  color: $color-gray;
   font-size: $typographic-small-font-size;
   font-style: italic;
   margin-bottom: 0;

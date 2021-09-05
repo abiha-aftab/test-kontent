@@ -3,7 +3,6 @@ import { Link, useStaticQuery, graphql } from 'gatsby'
 
 import Menu from '../Menu'
 import Links from '../Links'
-import './style.scss'
 
 const Sidebar = ({ isHomePage }) => {
   const data = useStaticQuery(graphql`
@@ -88,7 +87,7 @@ const Sidebar = ({ isHomePage }) => {
   const avatar = author.elements.avatar_image.value[0]
 
   return (
-    <div className="sidebar">
+    <header className="sidebar">
       <div className="sidebar__inner" data-kontent-item-id={author.system.id}>
         <div className="sidebar__author">
           <div>
@@ -137,7 +136,7 @@ const Sidebar = ({ isHomePage }) => {
           <p className="sidebar__copyright">{copyright}</p>
         </div>
       </div>
-    </div>
+    </header>
   )
 }
 

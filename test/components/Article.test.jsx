@@ -11,6 +11,15 @@ describe('Article', () => {
     ).toHaveAttribute('href', '/articles/humane-typography/')
   })
 
+  it('names the read-more link after the article', () => {
+    render(<Article data={article()} />)
+    expect(
+      screen.getByRole('link', {
+        name: 'Read Humane Typography in the Digital Age',
+      })
+    ).toHaveAttribute('href', '/articles/humane-typography/')
+  })
+
   it('gives the date a machine-readable datetime', () => {
     const { container } = render(<Article data={article()} />)
     const time = container.querySelector('time')
@@ -26,8 +35,11 @@ describe('Article', () => {
     )
   })
 
-  it('skips categories that resolved to null', () => {
-    render(<Article data={article({ category: value([null]) })} />)
+  it('skips categories that resolved to null, and the divider with them', () => {
+    const { container } = render(
+      <Article data={article({ category: value([null]) })} />
+    )
     expect(screen.queryByRole('link', { name: 'Typography' })).toBeNull()
+    expect(container.querySelector('.article__meta-divider')).toBeNull()
   })
 })

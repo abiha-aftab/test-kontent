@@ -11,18 +11,20 @@
       padding: 0;
       margin: 10px 0;
       &-link {
+        display: inline-block;
+        padding: 2px 0 2px 12px;
+        font-family: $typographic-heading-font-family;
         font-size: $typographic-base-font-size;
         color: $typographic-base-font-color;
-        font-weight: 400;
-        border: 0;
-        &:hover,
-        &:focus {
+        font-weight: 500;
+        border-left: 2px solid transparent;
+        &:hover {
           color: $color-primary;
-          border-bottom: 1px solid $color-primary;
+          border-left-color: $color-gray-border;
         }
         &--active {
-          color: $color-base;
-          border-bottom: 1px solid $color-base;
+          color: $color-primary;
+          border-left-color: $color-primary;
         }
       }
     }

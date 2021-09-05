@@ -2,20 +2,18 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Layout from '../components/Layout'
 import Seo from '../components/Seo'
-import Article from '../components/Article'
+import ArticleList from '../components/ArticleList'
 import Sidebar from '../components/Sidebar'
 
 const IndexRoute = ({ data }) => (
   <Layout>
     <div>
       <Sidebar isHomePage />
-      <div className="content">
+      <main className="content" id="main">
         <div className="content__inner">
-          {data.allKontentItemArticle.nodes.map((article) => (
-            <Article data={article} key={article.elements.slug.value} />
-          ))}
+          <ArticleList articles={data.allKontentItemArticle.nodes} />
         </div>
-      </div>
+      </main>
     </div>
   </Layout>
 )

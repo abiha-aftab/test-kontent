@@ -1,19 +1,20 @@
 import React from 'react'
-import Article from '../Article'
+import ArticleList from '../ArticleList'
 
 const CategoryTemplateDetails = ({ data, pageContext }) => (
-  <div className="content">
+  <main className="content" id="main">
     <div className="content__inner">
       <div className="page">
         <h1 className="page__title">{pageContext.categoryTitle}</h1>
         <div className="page__body">
-          {data.allKontentItemArticle.nodes.map((article) => (
-            <Article data={article} key={article.system.codename} />
-          ))}
+          <ArticleList
+            articles={data.allKontentItemArticle.nodes}
+            emptyMessage="No articles in this category yet."
+          />
         </div>
       </div>
     </div>
-  </div>
+  </main>
 )
 
 export default CategoryTemplateDetails

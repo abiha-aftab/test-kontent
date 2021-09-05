@@ -1,7 +1,5 @@
 import React from 'react'
 import { profileUrl } from '../../utils/profiles'
-import './style.scss'
-import '../../assets/fonts/fontello-771c82e0/css/fontello.css'
 
 const NETWORKS = [
   {
@@ -31,7 +29,7 @@ const Links = ({ data }) => {
 
   return (
     <div className="links">
-      <ul className="links__list">
+      <ul className="links__list" aria-label="Elsewhere">
         {links.map(({ network, icon, label, url, external }) => (
           <li
             className="links__list-item"

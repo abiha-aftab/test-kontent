@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import { menuItemPath } from '../../utils/paths'
-import './style.scss'
 
 class Menu extends React.Component {
   render() {
@@ -23,7 +22,11 @@ class Menu extends React.Component {
       </ul>
     )
 
-    return <nav className="menu">{menuBlock}</nav>
+    return (
+      <nav className="menu" aria-label="Main">
+        {menuBlock}
+      </nav>
+    )
   }
 }
 

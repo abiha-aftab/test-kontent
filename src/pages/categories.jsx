@@ -12,12 +12,15 @@ const CategoriesRoute = ({ data }) => {
     <Layout>
       <div>
         <Sidebar />
-        <div className="content">
+        <main className="content" id="main">
           <div className="content__inner">
             <div className="page">
               <h1 className="page__title">Categories</h1>
               <div className="page__body">
                 <div className="categories">
+                  {categories.length === 0 && (
+                    <p className="empty-state">No categories yet.</p>
+                  )}
                   <ul className="categories__list">
                     {categories.map((category) => (
                       <li
@@ -40,7 +43,7 @@ const CategoriesRoute = ({ data }) => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </Layout>
   )
