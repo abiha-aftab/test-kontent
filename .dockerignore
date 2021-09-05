@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.template
+.git
+node_modules
+public
+.cache
+coverage
+docs/screenshots
+*.log
