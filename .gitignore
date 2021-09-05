@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+project_venv/
+
+# Gatsby build output and caches
+.cache/
+public/
+.eslintcache
+.gatsby-context.js
+
+# test output
+coverage/
+
+# logs and scratch
+*.log
+npm-debug.log*
+logs/
+tmp/
+
+# editors and OS files
+.idea
+gatsby-starter-lumen.iml
+.vscode/
+.DS_Store
+
+yarn.lock
+
+# local configuration: real Kontent credentials live here
+.env
+.env.*
+!.env.template
+!.env.example
