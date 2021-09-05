@@ -51,6 +51,10 @@ module.exports = [
     languageOptions: { sourceType: 'commonjs', globals: globals.node },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { sourceType: 'module', globals: globals.node },
+  },
+  {
     files: ['test/**/*.{js,jsx}', '__mocks__/**/*.js'],
     languageOptions: { globals: { ...globals.jest, ...globals.node } },
   },

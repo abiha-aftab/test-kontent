@@ -1,164 +1,158 @@
-> **Note:** a learning project from 2021, based on Kentico's
-> [gatsby-starter-kontent-lumen](https://github.com/Kentico/gatsby-starter-kontent-lumen) starter.
-> I used it to learn Gatsby with Kentico Kontent before the client sites
-> (THV-Headless, yourhearvalve).
-> The starter's original README follows.
+# Kontent Lumen
 
-# Gatsby Starter Kontent Lumen
+A small Gatsby blog that takes its content from the [Kontent.ai](https://kontent.ai/) headless CMS. It is my fork of Kentico's [gatsby-starter-kontent-lumen](https://github.com/Kentico/gatsby-starter-kontent-lumen), which I used in 2021 to learn Gatsby with Kontent before using the same stack on client sites. My part of the upstream work was the Gatsby v2 to v3 upgrade and incremental builds, and one of my pull requests was merged into the starter.
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Kentico/gatsby-kontent-starter-lumen/master/LICENSE)
-[![Stack Overflow](https://img.shields.io/badge/Stack%20Overflow-ASK%20NOW-FE7A16.svg?logo=stackoverflow&logoColor=white)](https://stackoverflow.com/tags/kentico-kontent)
-[![Live demo](https://img.shields.io/badge/Live-Demo-00C7B7.svg?logo=netlify)](https://gatsby-starter-kontent-lumen.netlify.com/)
+This version runs on Gatsby 5, React 18 and the `@kontent-ai` packages. It can also build entirely from the demo export that ships with the repository, so it can be run, tested and screenshotted without a Kontent account.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/2adc83d6-9eba-45fc-b95c-c205e75d3189/deploy-status)](https://app.netlify.com/sites/gatsby-starter-kontent-lumen/deploys)
+| Home                                                                                     | Article                                                                                  |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| ![Home page with the article list and author sidebar](docs/screenshots/home-desktop.png) | ![Article page with rich text and an inline image](docs/screenshots/article-desktop.png) |
 
-Lumen is a minimal, lightweight and mobile-first starter for creating blogs using
-[Gatsby](https://github.com/gatsbyjs/gatsby).
+| Tag page                                                        | Phone                                                     | Keyboard focus                                                                |
+| --------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ![Articles tagged Typography](docs/screenshots/tag-desktop.png) | ![Home page on a phone](docs/screenshots/home-mobile.png) | ![Skip link shown after pressing Tab](docs/screenshots/skip-link-desktop.png) |
 
-This is an edited clone of
-[gatsby-starter-lumen](https://github.com/alxshelepenok/gatsby-starter-lumen) and [gatsby-v2-starter-lumen](https://github.com/GatsbyCentral/gatsby-v2-starter-lumen)
-migrated for getting content from headless CMS
-[Kontent](https://kontent.ai/).
+All screenshots show the demo content from `kontent-backup.zip`. The author photo in that export is replaced by a placeholder in offline builds.
 
-![Page Screenshot](https://i.imgur.com/jVImqT2.jpg)
+## What the site does
 
-## Features
+- Lists articles newest first, with their category and a short description.
+- Article pages render Kontent rich text (headings, lists, links, inline images).
+- Tag and category pages, plus `/tags/` and `/categories/` indexes with article counts. The counts come from a small local plugin, `plugins/kontent-used-by-content-items`, which adds reverse links (tag → articles) to the GraphQL schema.
+- Menu pages such as "About me" and "Contact" are Kontent `page` items linked from the navigation menu item.
+- Author name, bio, avatar and profile links come from the `author` item. Profiles left as `#` are hidden.
+- Kontent [Smart Link](https://github.com/kontent-ai/smart-link) data attributes are on every editable element, so the site works inside Web Spotlight (see [docs/WEB-SPOTLIGHT.md](docs/WEB-SPOTLIGHT.md)). Add `?preview-mode=true` to a URL to see the edit buttons.
+- A sitemap is generated at build time.
 
-- Content from [Kontent](http://kontent.ai/) headless CMS.
-- Lost Grid ([peterramsing/lost](https://github.com/peterramsing/lost)).
-- Beautiful typography inspired by [matejlatin/Gutenberg](https://github.com/matejlatin/Gutenberg).
-- [Mobile-First](https://medium.com/@mrmrs_/mobile-first-css-48bc4cc3f60f) approach in development.
-- Stylesheet built using SASS and [BEM](http://getbem.com/naming/)-Style naming.
-- Syntax highlighting in code blocks.
-- Sidebar menu built using a configuration block.
-- Archive organized by tags and categories.
-- Automatic Sitemap generation.
-- Google Analytics support.
+## How it fits together
 
-## Getting Started
+```mermaid
+flowchart LR
+  subgraph Content
+    K[Kontent Delivery API]
+    Z[kontent-backup.zip]
+  end
+  Z -- "KONTENT_OFFLINE=1:<br/>plugins/kontent-offline" --> A[axios adapter]
+  A --> S
+  K --> S["@kontent-ai/gatsby-source"]
+  S --> N[Gatsby data layer]
+  U[kontent-used-by-content-items] -- used_by_articles --> N
+  N --> P["gatsby-node.js<br/>config/pages.js"]
+  P --> T[templates/ and pages/]
+  T --> H[static HTML in public/]
+```
 
-### Requirements
+`gatsby-node.js` queries menu items, articles, tags and categories and hands the result to `config/pages.js`, which decides each page's URL, template and query context. The URL rules live in `src/utils/paths.js` and are shared with the components that link to those pages, so links and created pages cannot disagree. Duplicate slugs fail the build instead of one page silently replacing another.
 
-- [Node.js](https://nodejs.org/)
+### Offline mode
 
-### Create codebase
+`KONTENT_OFFLINE=1` runs the real `@kontent-ai/gatsby-source` plugin, not a mock of it:
 
-1. Click on "Use this template" button to [create your own repository from this template](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
+1. `config/kontent.js` points the plugin at a reserved host, `kontent-fixtures.invalid`, with a dummy project ID.
+2. `plugins/kontent-offline` installs an axios adapter on the source plugin's own axios instance. It answers `/types` and `/items-feed` and rejects every other host, so an offline build cannot reach a real Kontent project.
+3. The answers are built at startup from `kontent-backup.zip`. That file is the starter's public demo content, a Management API export. `backup-to-delivery.js` converts it to Delivery API JSON: it keeps published variants only, applies language fallback (cs-CZ to en-US), drops links to unpublished items and resolves rich-text images. A dependency-free reader in `read-zip.js` reads the archive, and the images are copied into `public/kontent-fixtures/`.
 
-### Create content source
+## Getting started
 
-1. Go to [app.kontent.ai](https://app.kontent.ai) and [create empty project](https://docs.kontent.ai/tutorials/set-up-kontent/projects/manage-projects#a-creating-projects)
-1. Go to "Project Settings", select API keys and copy
-   - Project ID
-1. Install [Kontent Backup Manager](https://github.com/Kentico/kontent-backup-manager-js) and import data to newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file (place appropriate values for `apiKey` and `projectId` arguments):
+You need Node 22 (see `.nvmrc`) or Docker.
+
+### Run it with the demo content
+
+```sh
+npm ci
+npm run build:offline
+npm run serve            # http://localhost:9000
+```
+
+`npm run develop:offline` starts the development server on http://localhost:8000 instead.
+
+With Docker, the image builds the offline site and serves it with nginx as a non-root user:
+
+```sh
+docker build -t kontent-lumen .
+docker run --rm -p 8080:8080 kontent-lumen    # http://localhost:8080
+```
+
+### Connect your own Kontent project
+
+1. Create an empty project at [app.kontent.ai](https://app.kontent.ai) and restore `kontent-backup.zip` into it with Kontent's backup manager or template import. Then publish the imported items.
+2. Create `.env` from the template and set your project ID (Project settings, then API keys):
 
    ```sh
-   npm i -g @kentico/kontent-backup-manager
-
-   kbm --action=restore --apiKey=<Management API key> --projectId=<Project ID> --zipFilename=kontent-backup
+   npm run prepare-environment   # copies .env.template to .env if .env does not exist
    ```
 
-   > Alternatively, you can use the [Template Manager UI](https://kentico.github.io/kontent-template-manager/import-from-file) for importing the content.
+3. Run `npm run develop` or `npm run build`.
 
-1. Go to your Kontent project and [publish all the imported items](https://docs.kontent.ai/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
+| Variable                     | Purpose                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| `KONTENT_PROJECT_ID`         | Required unless `KONTENT_OFFLINE=1`. The build stops with a clear message if it is missing. |
+| `KONTENT_LANGUAGE_CODENAMES` | Comma-separated language codenames. Defaults to `en-US`.                                    |
+| `KONTENT_PREVIEW_ENABLED`    | `true` to load unpublished content from the Preview Delivery API.                           |
+| `KONTENT_PREVIEW_KEY`        | Preview API key; required when preview is enabled. Never commit it.                         |
+| `KONTENT_OFFLINE`            | `1` builds from `kontent-backup.zip` and ignores the variables above.                       |
 
-### Join codebase and content data
+`.env` is git-ignored. None of these variables carry the `GATSBY_` prefix, so none of them reach the browser bundle. The project ID is the only value the page uses; Smart Link needs it, so it is passed in through `siteMetadata`.
 
-Copy [`.env.template`](`./.env.template`) and name it `.env` then set the `KONTENT_PROJECT_ID` environment variable to value from Kontent -> "Project Settings" -> API keys -> Project ID.
+### Preview deploy
 
-> This step could be done automatically by running `npm run prepare-environment` command defined in `package.json`.
+Set `KONTENT_PREVIEW_ENABLED=true` and `KONTENT_PREVIEW_KEY` on a preview build, and set Kontent's preview URLs to point at it:
 
-**You are now ready to use the site as your own!**
+| Content type | Preview URL                                         |
+| ------------ | --------------------------------------------------- |
+| Article      | `https://preview.example.com/articles/{URLslug}/`   |
+| Category     | `https://preview.example.com/categories/{URLslug}/` |
+| Tag          | `https://preview.example.com/tags/{URLslug}/`       |
+| Menu item    | `https://preview.example.com/{URLslug}/`            |
+| Author, Menu | `https://preview.example.com/`                      |
 
-## Development
+`npm run develop` sets `ENABLE_GATSBY_REFRESH_ENDPOINT`, so the source plugin's webhook support can refresh a running preview server.
 
-Install the dependencies and run development environment
+`netlify.toml` builds with `npm run build` on Node 22. Set the variables above in the Netlify UI instead of committing them.
+
+## Scripts
+
+| Command                               | What it does                                                                      |
+| ------------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run develop` / `develop:offline` | Development server, live or from the demo export                                  |
+| `npm run build` / `build:offline`     | Production build into `public/`                                                   |
+| `npm run serve`                       | Serves the last build on port 9000                                                |
+| `npm test`                            | Jest and Testing Library                                                          |
+| `npm run lint`                        | ESLint (react, hooks, jsx-a11y) with zero warnings allowed, then a Prettier check |
+| `npm run format`                      | Prettier write                                                                    |
+
+## Tests
+
+`npm test` runs 56 tests in 12 suites:
+
+- `config/kontent.js` option rules (offline mode, missing ID, preview key handling).
+- Page planning and URL helpers.
+- The offline pipeline against the real `kontent-backup.zip`: ZIP reading, published-only output, language fallback, rich-text images, the portrait placeholder, and the adapter refusing non-fixture hosts.
+- Components: article list items, the article page, sidebar, profile links, layout (skip link, Smart Link setup), tag and category pages and their empty states.
+
+`gatsby` and `@kontent-ai/smart-link` are mocked under `__mocks__/`, following Gatsby's unit-testing guide.
+
+To refresh the screenshots, build offline, serve `public/`, and run `scripts/capture-screenshots.mjs` with Playwright, for example inside `mcr.microsoft.com/playwright:v1.64.1-noble`:
 
 ```sh
-npm install
-npm run prepare-environment # Creates a .env file from .env.template file if no .env file exists
-npm run develop
+node scripts/capture-screenshots.mjs http://localhost:9000 docs/screenshots
 ```
 
-## Site production build
+## Design notes
 
-Install the dependencies and run production build
+- The look keeps Lumen's sidebar-and-column layout and Lost grid. The demo content is about type and printing, so it uses ink on warm paper with a vermilion accent, Fraunces for headings and Source Serif 4 for text. Every text colour pair is at least 5.8:1.
+- Accessibility: a skip link, `header`/`main` landmarks, a labelled main navigation, one `h1` per page, named icon links and visible focus outlines.
+- Dates are formatted in UTC with `Intl`, so the server-rendered HTML matches the browser.
+- Queries filter on `en-US`, as the starter always did. The Czech variants are sourced but not routed.
 
-```sh
-npm install
-npm run prepare-environment # Creates a .env file from .env.template file if no .env file exists
-npm run build
-```
+## Known limitations
 
-### Preview Deploy
+- `@kontent-ai/gatsby-source` and `@kontent-ai/gatsby-components` are the final releases of Kontent's Gatsby integration, and npm marks both as "no longer supported". They work with Gatsby 5, but a longer-lived setup would source content with `@kontent-ai/delivery-sdk` directly.
+- `npm audit` still reports advisories inside Gatsby 5's own build toolchain. None are critical, and they affect the build machine, not the static output.
+- The live Kontent path has not been re-tested against a real project since this upgrade; the offline mode exercises the same source plugin with Delivery-shaped data.
 
-To allow this example load unpublished content via [Preview Delivery API](https://docs.kontent.ai/reference/delivery-api#section/Production-vs.-Preview), you just need to adjust `.env` file created in ["Join codebase to content data"](#Join-codebase-and-content-data) section by setting these environment variables:
+## Credits and license
 
-- KONTENT_PREVIEW_KEY=`<PREVIEW_API_KEY>`by passing the [Preview authentication key](https://docs.kontent.ai/reference/delivery-api#section/Authentication)
-- KONTENT_PREVIEW_KEY=`true`
+Based on [gatsby-starter-kontent-lumen](https://github.com/Kentico/gatsby-starter-kontent-lumen) by Kentico, which builds on [gatsby-starter-lumen](https://github.com/alxshelepenok/gatsby-starter-lumen) by Alexander Shelepenok and [gatsby-v2-starter-lumen](https://github.com/GatsbyCentral/gatsby-v2-starter-lumen). Typography in the original was inspired by [matejlatin/Gutenberg](https://github.com/matejlatin/Gutenberg).
 
-You could also walk through the [Getting started with Gatsby Cloud and Kontent](https://www.gatsbyjs.com/cloud/docs/kontent/getting-started) to set up your Preview environment on [Gatsby Cloud](https://www.gatsbyjs.com/) plus enjoy the bonus in form of [incremental builds](https://www.gatsbyjs.com/cloud/docs/incremental-builds/).
-
-If you are more fan of [Netlify](https://www.netlify.com/), you could follow [Deploy to Netlify section](#Deploy-with-Netlify) and then provide the [Environment variables](https://docs.netlify.com/configure-builds/environment-variables/) mentioned above in Netlify.
-
-#### Preview URLs
-
-Once you've got your app running in a preview environment, you need to specify where (URL-wise) each type of your content can be accessed and viewed. For example, imagine your app runs at https://preview.example.com so you want to open "Project Settings", and select "Preview URLs" set it like this:
-
-- `Article`: `https://preview.example.com/articles/{URLslug}`
-- `Author`: `https://preview.example.com`
-- `Category`: `https://preview.example.com/categories/{URLslug}`
-- `Menu`: `https://preview.example.com`
-- `Menu Item`: `https://preview.example.com/{URLslug}`
-- `Tag`: `https://preview.example.com/tags/{URLslug}`
-
-> If you are using more complex and nested menu navigation, use example of the [Gatsby Navigation example](https://github.com/Kentico/kontent-gatsby-packages/tree/master/examples/navigation#readme). In a nutshell, you want to register routes endpoint i.e. `/preview/<LANGUAGE>/<CODENAME>` to the same page as was registered for `normal` URL.
-
-### Production Deploy
-
-Before deploying to production add own google analytics `trackingId` to [`gatsby-config.js`].
-
-## Deploy with Netlify
-
-Netlify can run in any frontend web environment, but the quickest way to try it out is by running it on a pre-configured starter site with Netlify. Use the button below to build and deploy your own copy of the repository:
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/kentico/gatsby-starter-kontent-lumen)
-
-After clicking that button, you’ll authenticate with GitHub and choose a repository name. Netlify will then automatically create a repository in your GitHub account with a copy of the files from the template. Next, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete. Next, you’ll need to set up Netlify’s Identity service to authorize users to log in to the CMS.
-
-> If you want to use [Incremental builds](https://www.netlify.com/blog/2020/04/23/enable-gatsby-incremental-builds-on-netlify/), you need to enable [Build Plugins Beta](https://docs.netlify.com/configure-builds/build-plugins/#enable-build-plugins-beta) for your site.
-
-> If you want to deploy your own copy of the gatsby-lumen-starter project, in the netlify.toml file modify the `KONTENT_PROJECT_ID` environment variable to match the value from your Kontent project's "Project Settings" -> API keys -> Project ID, or [set the Netlify environment variables](https://docs.kontent.ai/tutorials/develop-apps/integrate/netlify#a-set-netlify-environment-variables) through the Netlify UI.
-
-## Folder Structure
-
-```
-└── src
-    ├── assets
-    │   ├── fonts
-    │   │   └── fontello-771c82e0
-    │   │       ├── css
-    │   │       └── font
-    │   └── scss
-    │       ├── base
-    │       ├── mixins
-    │       └── pages
-    ├── components
-    │   ├── Article
-    │   ├── ArticleTemplateDetails
-    │   ├── CategoryTemplateDetails
-    │   ├── Links
-    │   ├── Layout
-    │   ├── Menu
-    │   ├── PageTemplateDetails
-    │   ├── Sidebar
-    │   └── TagTemplateDetails
-    ├── pages
-    └── templates
-```
-
-## Implementing Web spotlight
-
-This example is ready to be used with [Web Spotlight](https://webspotlight.kontent.ai/) functionality. If you want to explore the possibilities, take a look to the [Web Spotlight tutorial](/docs/WEB-SPOTLIGHT.md)!
-
-![Web Spotlight preview](./docs/web-spotlight.png)
+MIT licensed. See [LICENSE](LICENSE) (Copyright (c) 2020 Kentico). [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) are the upstream project's documents.
