@@ -1,77 +1,57 @@
 import React from 'react'
+import { profileUrl } from '../../utils/profiles'
 import './style.scss'
 import '../../assets/fonts/fontello-771c82e0/css/fontello.css'
 
-class Links extends React.Component {
-  render() {
-    const author = this.props.data
-    const links = {
-      telegram: author.elements.telegram.value,
-      twitter: author.elements.twitter.value,
-      github: author.elements.github.value,
-      vk: author.elements.vk.value,
-      // rss: author.elements.rss.value,
-      email: author.elements.email.value,
-    }
+const NETWORKS = [
+  {
+    network: 'twitter',
+    icon: 'icon-twitter',
+    label: 'Twitter',
+    external: true,
+  },
+  { network: 'github', icon: 'icon-github', label: 'GitHub', external: true },
+  { network: 'vk', icon: 'icon-vkontakte', label: 'VK', external: true },
+  { network: 'email', icon: 'icon-mail', label: 'Email' },
+  {
+    network: 'telegram',
+    icon: 'icon-paper-plane',
+    label: 'Telegram',
+    external: true,
+  },
+]
 
-    return (
-      <div className="links">
-        <ul className="links__list">
+const Links = ({ data }) => {
+  const links = NETWORKS.map((entry) => ({
+    ...entry,
+    url: profileUrl(entry.network, data.elements[entry.network].value),
+  })).filter((entry) => entry.url)
+
+  if (links.length === 0) return null
+
+  return (
+    <div className="links">
+      <ul className="links__list">
+        {links.map(({ network, icon, label, url, external }) => (
           <li
             className="links__list-item"
-            data-kontent-element-codename="twitter"
+            key={network}
+            data-kontent-element-codename={network}
           >
             <a
-              href={`https://www.twitter.com/${links.twitter}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={url}
+              aria-label={label}
+              {...(external
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
             >
-              <i className="icon-twitter" />
+              <i className={icon} aria-hidden="true" />
             </a>
           </li>
-          <li
-            className="links__list-item"
-            data-kontent-element-codename="github"
-          >
-            <a
-              href={`https://www.github.com/${links.github}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="icon-github" />
-            </a>
-          </li>
-          <li className="links__list-item" data-kontent-element-codename="vk">
-            <a
-              href={`https://www.vk.com/${links.vk}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="icon-vkontakte" />
-            </a>
-          </li>
-        </ul>
-        <ul className="links__list">
-          <li
-            className="links__list-item"
-            data-kontent-element-codename="email"
-          >
-            <a href={`mailto:${links.email}`}>
-              <i className="icon-mail" />
-            </a>
-          </li>
-          <li
-            className="links__list-item"
-            data-kontent-element-codename="telegram"
-          >
-            <a href={`telegram:${links.telegram}`}>
-              <i className="icon-paper-plane" />
-            </a>
-          </li>
-        </ul>
-      </div>
-    )
-  }
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 export default Links

@@ -3,6 +3,7 @@ import { Link, graphql } from 'gatsby'
 import Layout from '../components/Layout'
 import Seo from '../components/Seo'
 import Sidebar from '../components/Sidebar'
+import { tagPath } from '../utils/paths'
 
 const TagsRoute = ({ data }) => {
   const tags = data.allKontentItemTag.nodes
@@ -20,13 +21,13 @@ const TagsRoute = ({ data }) => {
                   <ul className="tags__list">
                     {tags.map((tag) => (
                       <li
-                        key={tag.elements.title.value}
+                        key={tag.system.codename}
                         className="tags__list-item"
                         data-kontent-item-id={tag.system.id}
                         data-kontent-element-codename="title"
                       >
                         <Link
-                          to={`/tags/${tag.elements.slug.value}/`}
+                          to={tagPath(tag.elements.slug.value)}
                           className="tags__list-item-link"
                         >
                           {tag.elements.title.value} (
@@ -66,6 +67,7 @@ export const pageQuery = graphql`
       nodes {
         system {
           id
+          codename
         }
         elements {
           title {

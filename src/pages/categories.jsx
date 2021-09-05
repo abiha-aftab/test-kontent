@@ -3,6 +3,7 @@ import { Link, graphql } from 'gatsby'
 import Layout from '../components/Layout'
 import Seo from '../components/Seo'
 import Sidebar from '../components/Sidebar'
+import { categoryPath } from '../utils/paths'
 
 const CategoriesRoute = ({ data }) => {
   const categories = data.allKontentItemCategory.nodes
@@ -26,10 +27,10 @@ const CategoriesRoute = ({ data }) => {
                         data-kontent-element-codename="title"
                       >
                         <Link
-                          to={`/categories/${category.elements.slug.value}/`}
+                          to={categoryPath(category.elements.slug.value)}
                           className="categories__list-item-link"
                         >
-                          {category.elements.slug.value} (
+                          {category.elements.title.value} (
                           {category.used_by_articles.length})
                         </Link>
                       </li>

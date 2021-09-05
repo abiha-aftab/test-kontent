@@ -41,7 +41,10 @@ export const pageQuery = graphql`
         }
       }
     }
-    allKontentItemArticle(filter: { preferred_language: { eq: "en-US" } }) {
+    allKontentItemArticle(
+      filter: { preferred_language: { eq: "en-US" } }
+      sort: { elements: { date: { value: DESC } } }
+    ) {
       nodes {
         elements {
           category {

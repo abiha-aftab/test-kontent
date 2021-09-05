@@ -42,6 +42,7 @@ export const pageQuery = graphql`
         }
         preferred_language: { eq: "en-US" }
       }
+      sort: { elements: { date: { value: DESC } } }
     ) {
       nodes {
         system {

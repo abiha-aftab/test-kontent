@@ -85,7 +85,7 @@ const Sidebar = ({ isHomePage }) => {
   const author = data.kontentItemAuthor
   const menu = data.kontentItemMenu
   const copyright = data.kontentItemSiteMetadata.elements.copyright.value
-  const profilePic = data.kontentItemAuthor.elements.avatar_image.value[0].url
+  const avatar = author.elements.avatar_image.value[0]
 
   return (
     <div className="sidebar">
@@ -93,14 +93,16 @@ const Sidebar = ({ isHomePage }) => {
         <div className="sidebar__author">
           <div>
             <Link to="/">
-              <img
-                src={profilePic}
-                className="sidebar__author-photo"
-                width="75"
-                height="75"
-                alt={author.name}
-                data-kontent-element-codename="avatar_image"
-              />
+              {avatar && (
+                <img
+                  src={avatar.url}
+                  className="sidebar__author-photo"
+                  width="75"
+                  height="75"
+                  alt={author.elements.name.value}
+                  data-kontent-element-codename="avatar_image"
+                />
+              )}
             </Link>
             {isHomePage ? (
               <h1
