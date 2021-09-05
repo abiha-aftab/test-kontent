@@ -1,57 +1,57 @@
 import React from 'react'
 import { Link, graphql } from 'gatsby'
-import Helmet from 'react-helmet'
-import * as _ from 'lodash'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 import Sidebar from '../components/Sidebar'
 
-class TagsRoute extends React.Component {
-  render() {
-    const tagsData = this.props
-    const title = tagsData.data.kontentItemSiteMetadata.elements.title.value
-    const tags = tagsData.data.allKontentItemTag.nodes
+const TagsRoute = ({ data }) => {
+  const tags = data.allKontentItemTag.nodes
 
-    return (
-      <Layout>
-        <div>
-          <Helmet title={`All Tags - ${title}`} />
-          <Sidebar />
-          <div className="content">
-            <div className="content__inner">
-              <div className="page">
-                <h1 className="page__title">Tags</h1>
-                <div className="page__body">
-                  <div className="tags">
-                    <ul className="tags__list">
-                      {tags.map((tag) => (
-                        <li
-                          key={tag.elements.title.value}
-                          className="tags__list-item"
-                          data-kontent-item-id={tag.system.id}
-                          data-kontent-element-codename="title"
+  return (
+    <Layout>
+      <div>
+        <Sidebar />
+        <div className="content">
+          <div className="content__inner">
+            <div className="page">
+              <h1 className="page__title">Tags</h1>
+              <div className="page__body">
+                <div className="tags">
+                  <ul className="tags__list">
+                    {tags.map((tag) => (
+                      <li
+                        key={tag.elements.title.value}
+                        className="tags__list-item"
+                        data-kontent-item-id={tag.system.id}
+                        data-kontent-element-codename="title"
+                      >
+                        <Link
+                          to={`/tags/${tag.elements.slug.value}/`}
+                          className="tags__list-item-link"
                         >
-                          <Link
-                            to={`/tags/${tag.elements.slug.value}/`}
-                            className="tags__list-item-link"
-                          >
-                            {tag.elements.title.value} (
-                            {_.get(tag.used_by_articles, 'length', 'N/A')})
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                          {tag.elements.title.value} (
+                          {tag.used_by_articles.length})
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </Layout>
-    )
-  }
+      </div>
+    </Layout>
+  )
 }
 
 export default TagsRoute
+
+export const Head = ({ data }) => (
+  <Seo
+    title={`All Tags - ${data.kontentItemSiteMetadata.elements.title.value}`}
+  />
+)
 
 export const pageQuery = graphql`
   {

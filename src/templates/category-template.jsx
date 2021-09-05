@@ -1,30 +1,26 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 import Sidebar from '../components/Sidebar'
 import CategoryTemplateDetails from '../components/CategoryTemplateDetails'
 
-class CategoryTemplate extends React.Component {
-  render() {
-    const categoryTemplateData = this.props
-    const siteTitle =
-      categoryTemplateData.data.kontentItemSiteMetadata.elements.title.value
-    const categoryTitle = categoryTemplateData.pageContext.categoryTitle
-
-    return (
-      <Layout>
-        <div>
-          <Helmet title={`${categoryTitle} - ${siteTitle}`} />
-          <Sidebar />
-          <CategoryTemplateDetails {...categoryTemplateData} />
-        </div>
-      </Layout>
-    )
-  }
-}
+const CategoryTemplate = (props) => (
+  <Layout>
+    <div>
+      <Sidebar />
+      <CategoryTemplateDetails {...props} />
+    </div>
+  </Layout>
+)
 
 export default CategoryTemplate
+
+export const Head = ({ data, pageContext }) => (
+  <Seo
+    title={`${pageContext.categoryTitle} - ${data.kontentItemSiteMetadata.elements.title.value}`}
+  />
+)
 
 export const pageQuery = graphql`
   query CategoryPage($categoryCodename: String) {

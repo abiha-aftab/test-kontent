@@ -1,30 +1,26 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 import Sidebar from '../components/Sidebar'
 import TagTemplateDetails from '../components/TagTemplateDetails'
 
-class TagTemplate extends React.Component {
-  render() {
-    const pageTemplateData = this.props
-    const title =
-      pageTemplateData.data.kontentItemSiteMetadata.elements.title.value
-    const tagTitle = pageTemplateData.pageContext.tagTitle
-
-    return (
-      <Layout>
-        <div>
-          <Helmet title={`All Articles tagged as "${tagTitle}" - ${title}`} />
-          <Sidebar />
-          <TagTemplateDetails {...pageTemplateData} />
-        </div>
-      </Layout>
-    )
-  }
-}
+const TagTemplate = (props) => (
+  <Layout>
+    <div>
+      <Sidebar />
+      <TagTemplateDetails {...props} />
+    </div>
+  </Layout>
+)
 
 export default TagTemplate
+
+export const Head = ({ data, pageContext }) => (
+  <Seo
+    title={`All Articles tagged as "${pageContext.tagTitle}" - ${data.kontentItemSiteMetadata.elements.title.value}`}
+  />
+)
 
 export const pageQuery = graphql`
   query TagPage($tagCodename: String) {
@@ -44,7 +40,7 @@ export const pageQuery = graphql`
         }
         preferred_language: { eq: "en-US" }
       }
-      sort: { fields: elements___date___value, order: DESC }
+      sort: { elements: { date: { value: DESC } } }
     ) {
       nodes {
         elements {

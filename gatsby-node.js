@@ -1,20 +1,18 @@
-const _ = require('lodash')
-const Promise = require('bluebird')
 const path = require('path')
-const slash = require('slash')
 
-exports.createPages = ({ graphql, actions }) => {
+const templates = {
+  article: path.resolve('./src/templates/article-template.jsx'),
+  page: path.resolve('./src/templates/page-template.jsx'),
+  tag: path.resolve('./src/templates/tag-template.jsx'),
+  category: path.resolve('./src/templates/category-template.jsx'),
+}
+
+exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
 
-  return new Promise((resolve, reject) => {
-    const articleTemplate = path.resolve('./src/templates/article-template.jsx')
-    const pageTemplate = path.resolve('./src/templates/page-template.jsx')
-    const tagTemplate = path.resolve('./src/templates/tag-template.jsx')
-    const categoryTemplate = path.resolve('./src/templates/category-template.jsx')
-
-    graphql(`
+  const result = await graphql(`
     {
-      allKontentItemCategory(filter: {preferred_language: {eq: "en-US"}}) {
+      allKontentItemCategory(filter: { preferred_language: { eq: "en-US" } }) {
         nodes {
           system {
             codename
@@ -29,7 +27,7 @@ exports.createPages = ({ graphql, actions }) => {
           }
         }
       }
-      allKontentItemTag(filter: {preferred_language: {eq: "en-US"}}) {
+      allKontentItemTag(filter: { preferred_language: { eq: "en-US" } }) {
         nodes {
           system {
             codename
@@ -45,8 +43,10 @@ exports.createPages = ({ graphql, actions }) => {
         }
       }
       allKontentItemMenuItem(
-        filter: {preferred_language: {eq: "en-US"},
-        elements: {slug: {value: {ne: "/"}}}}
+        filter: {
+          preferred_language: { eq: "en-US" }
+          elements: { slug: { value: { ne: "/" } } }
+        }
       ) {
         nodes {
           elements {
@@ -66,7 +66,7 @@ exports.createPages = ({ graphql, actions }) => {
           }
         }
       }
-      allKontentItemArticle(filter: {preferred_language: {eq: "en-US"}}) {
+      allKontentItemArticle(filter: { preferred_language: { eq: "en-US" } }) {
         nodes {
           elements {
             slug {
@@ -76,55 +76,52 @@ exports.createPages = ({ graphql, actions }) => {
         }
       }
     }
-    `).then(result => {
-      if (result.errors) {
-        console.error(result.errors)
-        reject(result.errors)
-      }
+  `)
 
-      _.each(result.data.allKontentItemMenuItem.nodes, node => {
-        const contentPage = node.elements.content.value[0]
-        contentPage && createPage({
-          path: `/${node.elements.slug.value}/`,
-          component: slash(pageTemplate),
-          context: {
-            language: `${contentPage.preferred_language}`,
-            codename: `${contentPage.system.codename}`,
-          },
-        })
-      })
+  if (result.errors) {
+    throw new Error(`Kontent page queries failed: ${result.errors}`)
+  }
 
-      _.each(result.data.allKontentItemArticle.nodes, node => {
-        createPage({
-          path: `/articles/${node.elements.slug.value}/`,
-          component: slash(articleTemplate),
-          context: { slug: `${node.elements.slug.value}` },
-        })
-      })
+  result.data.allKontentItemMenuItem.nodes.forEach((node) => {
+    const contentPage = node.elements.content.value[0]
+    if (!contentPage) return
+    createPage({
+      path: `/${node.elements.slug.value}/`,
+      component: templates.page,
+      context: {
+        language: contentPage.preferred_language,
+        codename: contentPage.system.codename,
+      },
+    })
+  })
 
-      const tags = result.data.allKontentItemTag.nodes
-      _.each(tags, tag => {
-        const tagCodename = tag.system.codename
-        const tagTitle = tag.elements.title.value
-        createPage({
-          path: `/tags/${tag.elements.slug.value}/`,
-          component: tagTemplate,
-          context: { tagCodename, tagTitle },
-        })
-      })
+  result.data.allKontentItemArticle.nodes.forEach((node) => {
+    createPage({
+      path: `/articles/${node.elements.slug.value}/`,
+      component: templates.article,
+      context: { slug: node.elements.slug.value },
+    })
+  })
 
-      const categories = result.data.allKontentItemCategory.nodes
-      _.each(categories, category => {
-        const categoryCodename = category.system.codename
-        const categoryTitle = category.elements.title.value
-        createPage({
-          path: `/categories/${category.elements.slug.value}/`,
-          component: categoryTemplate,
-          context: { categoryCodename, categoryTitle },
-        })
-      })
+  result.data.allKontentItemTag.nodes.forEach((tag) => {
+    createPage({
+      path: `/tags/${tag.elements.slug.value}/`,
+      component: templates.tag,
+      context: {
+        tagCodename: tag.system.codename,
+        tagTitle: tag.elements.title.value,
+      },
+    })
+  })
 
-      resolve()
+  result.data.allKontentItemCategory.nodes.forEach((category) => {
+    createPage({
+      path: `/categories/${category.elements.slug.value}/`,
+      component: templates.category,
+      context: {
+        categoryCodename: category.system.codename,
+        categoryTitle: category.elements.title.value,
+      },
     })
   })
 }

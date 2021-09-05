@@ -1,40 +1,33 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 import Article from '../components/Article'
 import Sidebar from '../components/Sidebar'
 
-class IndexRoute extends React.Component {
-  render() {
-    const routeData = this.props
-    const items = []
-    const title = routeData.data.kontentItemSiteMetadata.elements.title.value
-    const subtitle =
-      routeData.data.kontentItemSiteMetadata.elements.subtitle.value
-    const articles = routeData.data.allKontentItemArticle.nodes
-    articles.forEach((article) => {
-      items.push(<Article data={article} key={article.elements.slug.value} />)
-    })
-
-    return (
-      <Layout>
-        <div>
-          <Helmet>
-            <title>{title}</title>
-            <meta name="description" content={subtitle} />
-          </Helmet>
-          <Sidebar isHomePage />
-          <div className="content">
-            <div className="content__inner">{items}</div>
-          </div>
+const IndexRoute = ({ data }) => (
+  <Layout>
+    <div>
+      <Sidebar isHomePage />
+      <div className="content">
+        <div className="content__inner">
+          {data.allKontentItemArticle.nodes.map((article) => (
+            <Article data={article} key={article.elements.slug.value} />
+          ))}
         </div>
-      </Layout>
-    )
-  }
-}
+      </div>
+    </div>
+  </Layout>
+)
 
 export default IndexRoute
+
+export const Head = ({ data }) => (
+  <Seo
+    title={data.kontentItemSiteMetadata.elements.title.value}
+    description={data.kontentItemSiteMetadata.elements.subtitle.value}
+  />
+)
 
 export const pageQuery = graphql`
   query IndexQuery {

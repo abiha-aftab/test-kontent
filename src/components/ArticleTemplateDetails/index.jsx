@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import moment from 'moment'
+import { formatLongDate } from '../../utils/date'
 import './style.scss'
-import { RichTextElement } from '@kentico/gatsby-kontent-components'
+import { RichTextElement } from '@kontent-ai/gatsby-components'
 
 class ArticleTemplateDetails extends React.Component {
   render() {
@@ -24,9 +24,7 @@ class ArticleTemplateDetails extends React.Component {
 
     const tagsBlock = (
       <div className="article-single__tags">
-        <ul
-          className="article-single__tags-list"
-        >
+        <ul className="article-single__tags-list">
           {tags &&
             tags.map((tag) => (
               <li
@@ -59,8 +57,6 @@ class ArticleTemplateDetails extends React.Component {
             <div
               data-kontent-element-codename="content"
               className="article-single__body"
-              /* eslint-disable-next-line react/no-danger */
-              // dangerouslySetInnerHTML={{ __html: article.content.value }}
             >
               <RichTextElement value={article.content.value} />
             </div>
@@ -69,7 +65,7 @@ class ArticleTemplateDetails extends React.Component {
             className="article-single__date"
             data-kontent-element-codename="date"
           >
-            <em>Published {moment(article.date.value).format('D MMM YYYY')}</em>
+            <em>Published {formatLongDate(article.date.value)}</em>
           </div>
           <div className="article-single__footer">
             {tagsBlock}

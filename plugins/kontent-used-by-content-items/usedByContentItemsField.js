@@ -1,6 +1,4 @@
-const {
-  getKontentItemNodeTypeName,
-} = require('@kentico/gatsby-source-kontent')
+const { getKontentItemNodeTypeName } = require('@kontent-ai/gatsby-source')
 
 // child --(linkedElementCodename)--> parent
 // Example
@@ -12,11 +10,9 @@ const linkUsedByContentItems = (
   parentTypeCodename,
   childTypeCodename,
   linkedElementCodename,
-  backReferenceName,
+  backReferenceName
 ) => {
-  const {
-    createResolvers,
-  } = api
+  const { createResolvers } = api
 
   // i.e. article -> kontent_item_article
   const parentGraphqlType = getKontentItemNodeTypeName(parentTypeCodename)
@@ -29,7 +25,7 @@ const linkUsedByContentItems = (
         type: `[${parentGraphqlType}]`,
         // https://www.gatsbyjs.org/docs/schema-customization/
         resolve: async (source, args, context) => {
-          const linkedNodes = await context.nodeModel.runQuery({
+          const { entries } = await context.nodeModel.findAll({
             query: {
               filter: {
                 elements: {
@@ -52,9 +48,8 @@ const linkUsedByContentItems = (
               },
             },
             type: parentGraphqlType,
-            firstOnly: false,
           })
-          return linkedNodes
+          return Array.from(entries)
         },
       },
     },

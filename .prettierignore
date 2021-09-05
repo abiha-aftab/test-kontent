@@ -1,3 +1,11 @@
 node_modules/
 public/
 .cache/
+coverage/
+package-lock.json
+src/assets/fonts/
+# Upstream starter documents, kept as published
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+docs/WEB-SPOTLIGHT.md
+plugins/kontent-used-by-content-items/README.md

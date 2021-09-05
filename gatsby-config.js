@@ -5,35 +5,41 @@ const url = 'https://gatsby-starter-kontent-lumen.netlify.com/'
 
 require('dotenv').config()
 
+const {
+  BACKUP_FILE,
+  isOfflineMode,
+  kontentSourceOptions,
+} = require('./config/kontent')
+
+const KONTENT_SOURCE_PLUGIN = '@kontent-ai/gatsby-source'
+const offline = isOfflineMode(process.env)
+const kontentOptions = kontentSourceOptions(process.env)
+
 module.exports = {
   // These properties are used by gatsby-plugin-sitemap
   // https://www.gatsbyjs.org/packages/gatsby-plugin-sitemap/#how-to-use
   siteMetadata: {
     url,
     siteUrl: url,
+    // Read by Kontent Smart Link to open items in the Web Spotlight editor.
+    kontentEnvironmentId: kontentOptions.projectId,
+    kontentLanguageCodename: kontentOptions.languageCodenames[0],
   },
   plugins: [
+    ...(offline
+      ? [
+          {
+            resolve: 'kontent-offline', // local plugin
+            options: {
+              sourcePlugin: KONTENT_SOURCE_PLUGIN,
+              backupFile: BACKUP_FILE,
+            },
+          },
+        ]
+      : []),
     {
-      resolve: '@kentico/gatsby-source-kontent',
-      options: {
-        projectId: process.env.KONTENT_PROJECT_ID, // Fill in your Project ID
-        // if false used authorization key for secured API
-        usePreviewUrl: !!(
-          process.env.KONTENT_PREVIEW_ENABLED &&
-          process.env.KONTENT_PREVIEW_ENABLED.toLowerCase() === 'true'
-        ),
-        authorizationKey:
-          process.env.KONTENT_PREVIEW_ENABLED &&
-          process.env.KONTENT_PREVIEW_ENABLED.toLowerCase() === 'true'
-            ? process.env.KONTENT_PREVIEW_KEY
-            : undefined,
-        languageCodenames: process.env.KONTENT_LANGUAGE_CODENAMES.split(
-          ','
-        ).map((lang) => lang.trim()),
-        experimental: {
-          managementApiTriggersUpdate: true,
-        },
-      },
+      resolve: KONTENT_SOURCE_PLUGIN,
+      options: kontentOptions,
     },
     {
       resolve: 'kontent-used-by-content-items', // local plugin
@@ -54,20 +60,8 @@ module.exports = {
         ],
       },
     },
-    'gatsby-plugin-sharp',
-    // {
-    //   resolve: 'gatsby-plugin-google-analytics',
-    //   options: { trackingId: '' }, // add own google analytics trackingId
-    // },
-    {
-      resolve: 'gatsby-plugin-google-fonts',
-      options: {
-        fonts: ['roboto:400,400i,500,700'],
-      },
-    },
     'gatsby-plugin-sitemap',
     'gatsby-plugin-catch-links',
-    'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-plugin-sass',
       options: {
@@ -101,8 +95,15 @@ module.exports = {
             minPixelValue: 0,
           }),
         ],
+        // The partials still use @import and global colour functions, and
+        // gatsby-plugin-sass drives Sass through its legacy JS API.
         sassOptions: {
-          precision: 8,
+          silenceDeprecations: [
+            'legacy-js-api',
+            'import',
+            'global-builtin',
+            'color-functions',
+          ],
         },
       },
     },

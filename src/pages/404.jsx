@@ -2,35 +2,34 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Sidebar from '../components/Sidebar'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 
-class NotFoundRoute extends React.Component {
-  render() {
-    return (
-      <Layout>
-        <div>
-          <Sidebar />
-          <div className="content">
-            <div className="content__inner">
-              <div className="page">
-                <h1 className="page__title">NOT FOUND</h1>
-                <div className="page__body">
-                  <p>
-                    {
-                      this.props.data.kontentItemSiteMetadata.elements
-                        .page_not_found_message.value
-                    }
-                  </p>
-                </div>
-              </div>
+const NotFoundRoute = ({ data }) => (
+  <Layout>
+    <div>
+      <Sidebar />
+      <div className="content">
+        <div className="content__inner">
+          <div className="page">
+            <h1 className="page__title">NOT FOUND</h1>
+            <div className="page__body">
+              <p>
+                {
+                  data.kontentItemSiteMetadata.elements.page_not_found_message
+                    .value
+                }
+              </p>
             </div>
           </div>
         </div>
-      </Layout>
-    )
-  }
-}
+      </div>
+    </div>
+  </Layout>
+)
 
 export default NotFoundRoute
+
+export const Head = () => <Seo title="Not found" />
 
 export const pageQuery = graphql`
   query NotFoundQuery {

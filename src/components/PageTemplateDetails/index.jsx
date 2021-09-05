@@ -21,7 +21,6 @@ class PageTemplateDetails extends React.Component {
               </h1>
               <div
                 className="page__body"
-                /* eslint-disable-next-line react/no-danger */
                 dangerouslySetInnerHTML={{
                   __html: kontentItemPage.elements.description.value,
                 }}

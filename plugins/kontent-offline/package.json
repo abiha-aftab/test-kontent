@@ -1,0 +1,8 @@
+{
+  "name": "kontent-offline",
+  "version": "1.0.0",
+  "description": "Builds the site from kontent-backup.zip when KONTENT_OFFLINE=1",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT"
+}

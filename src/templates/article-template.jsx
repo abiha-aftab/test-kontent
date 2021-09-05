@@ -1,32 +1,25 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import Layout from '../components/Layout'
+import Seo from '../components/Seo'
 import ArticleTemplateDetails from '../components/ArticleTemplateDetails'
 
-class ArticleTemplate extends React.Component {
-  render() {
-    const title = this.props.data.kontentItemSiteMetadata.elements.title.value
-    const article = this.props.data.kontentItemArticle
-
-    return (
-      <Layout>
-        <div>
-          <Helmet>
-            <title>{`${article.elements.title.value} - ${title}`}</title>
-            <meta
-              name="description"
-              content={article.elements.description.value}
-            />
-          </Helmet>
-          <ArticleTemplateDetails {...this.props} />
-        </div>
-      </Layout>
-    )
-  }
-}
+const ArticleTemplate = (props) => (
+  <Layout>
+    <div>
+      <ArticleTemplateDetails {...props} />
+    </div>
+  </Layout>
+)
 
 export default ArticleTemplate
+
+export const Head = ({ data }) => (
+  <Seo
+    title={`${data.kontentItemArticle.elements.title.value} - ${data.kontentItemSiteMetadata.elements.title.value}`}
+    description={data.kontentItemArticle.elements.description.value}
+  />
+)
 
 export const pageQuery = graphql`
   query ArticleBySlug($slug: String!) {
@@ -76,7 +69,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    kontentItemArticle(elements: {slug: {value: {eq: $slug}}}) {
+    kontentItemArticle(elements: { slug: { value: { eq: $slug } } }) {
       system {
         id
       }

@@ -4,17 +4,20 @@
   "description": "Simple starter blogpost portfolio page for Gatsby and Kontent headless CMS.",
   "repository": "git+https://github.com/kentico/gatsby-starter-kontent-lumen",
   "license": "MIT",
-  "private": false,
+  "private": true,
+  "engines": {
+    "node": ">=22 <23"
+  },
   "scripts": {
-    "prepare-environment": "node scripts/ncp.js .env.template .env -u",
-    "develop": "cross-env ENABLE_GATSBY_REFRESH_ENDPOINT=true gatsby develop",
+    "prepare-environment": "node scripts/copy-env-template.js",
+    "develop": "ENABLE_GATSBY_REFRESH_ENDPOINT=true gatsby develop",
+    "develop:offline": "KONTENT_OFFLINE=1 gatsby develop",
     "build": "gatsby build",
-    "build": "cross-env GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --log-pages",
+    "build:offline": "KONTENT_OFFLINE=1 gatsby build",
+    "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "lint": "./node_modules/.bin/eslint --cache --ext .js,.jsx --ignore-pattern public .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ./*.js src/**/*.{js,jsx}",
-    "deploy": "gatsby build --prefix-paths && gh-pages -d public"
+    "lint": "eslint . --max-warnings 0 && prettier --check .",
+    "format": "prettier --write ."
   },
   "keywords": [
     "gatsby",
@@ -25,39 +28,35 @@
     "CMS"
   ],
   "dependencies": {
-    "@kentico/gatsby-kontent-components": "^6.0.0",
-    "@kentico/gatsby-source-kontent": "^7.2.0",
-    "@kentico/kontent-smart-link": "^2.1.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-helmet": "^5.2.0"
+    "@kontent-ai/delivery-sdk": "^16.4.8",
+    "@kontent-ai/gatsby-components": "10.0.0",
+    "@kontent-ai/gatsby-source": "10.0.1",
+    "@kontent-ai/smart-link": "^5.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "bluebird": "^3.5.1",
-    "cross-env": "^7.0.2",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.30.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.24.0",
-    "gatsby": "^3.9.1",
-    "gatsby-cli": "^3.9.0",
-    "gatsby-plugin-catch-links": "^3.9.0",
-    "gatsby-plugin-google-analytics": "^3.9.0",
-    "gatsby-plugin-google-fonts": "^1.0.1",
-    "gatsby-plugin-react-helmet": "^4.9.0",
-    "gatsby-plugin-sass": "^4.9.0",
-    "gatsby-plugin-sharp": "^3.9.0",
-    "gatsby-plugin-sitemap": "^4.5.0",
-    "lodash": "^4.17.19",
-    "lost": "^8.2.0",
-    "ncp": "^2.0.0",
-    "node-sass": "^6.0.1",
-    "postcss-pxtorem": "^6.0.0",
-    "prettier": "^2.3.2",
-    "prismjs": "^1.15.0"
+    "@eslint/js": "^9.39.5",
+    "dotenv": "^16.6.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "gatsby": "^5.16.1",
+    "gatsby-plugin-catch-links": "^5.16.0",
+    "gatsby-plugin-image": "^3.16.0",
+    "gatsby-plugin-sass": "^6.16.0",
+    "gatsby-plugin-sitemap": "^6.16.0",
+    "globals": "^17.13.0",
+    "lodash": "^4.17.21",
+    "lost": "^9.0.2",
+    "postcss-pxtorem": "^6.1.0",
+    "prettier": "^3.9.10",
+    "sass": "~1.106.1"
+  },
+  "overrides": {
+    "@kontent-ai/gatsby-source": {
+      "axios": "^0.34.0"
+    }
   }
 }
