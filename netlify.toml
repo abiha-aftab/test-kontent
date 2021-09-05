@@ -2,7 +2,7 @@
   publish = "public"
   command = "npm run build:netlify"
 [context.production]
-  environment ={  KONTENT_PROJECT_ID = "6f86dd04-76b6-00d1-f8d9-f5be4986305a", KONTENT_LANGUAGE_CODENAMES = "en-US, cs-CZ" }
+  environment ={  KONTENT_PROJECT_ID = "ed66102d-588e-0065-f6fd-fac0d703ba9f", KONTENT_LANGUAGE_CODENAMES = "en-US, cs-CZ" }
 [build.environment]
   YARN_VERSION = "1.3.2"
   YARN_FLAGS = "--no-ignore-optional"
