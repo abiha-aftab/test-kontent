@@ -16,6 +16,11 @@ describe('kontentSourceOptions', () => {
     expect(options.authorizationKey).toBeUndefined()
   })
 
+  it('lets `gatsby serve` load the config without a project ID', () => {
+    const options = kontentSourceOptions({ gatsby_executing_command: 'serve' })
+    expect(options.proxy).toEqual({ deliveryDomain: FIXTURE_DOMAIN })
+  })
+
   it('explains what to do when the project ID is missing', () => {
     expect(() => kontentSourceOptions({})).toThrow(/KONTENT_OFFLINE=1/)
   })

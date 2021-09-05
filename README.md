@@ -123,7 +123,7 @@ Set `KONTENT_PREVIEW_ENABLED=true` and `KONTENT_PREVIEW_KEY` on a preview build,
 
 ## Tests
 
-`npm test` runs 56 tests in 12 suites:
+`npm test` runs 57 tests in 12 suites:
 
 - `config/kontent.js` option rules (offline mode, missing ID, preview key handling).
 - Page planning and URL helpers.

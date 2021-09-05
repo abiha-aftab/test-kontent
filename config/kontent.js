@@ -11,6 +11,10 @@ const FIXTURE_LANGUAGES = ['en-US', 'cs-CZ']
 
 const isOfflineMode = (env) => ['1', 'true'].includes(env.KONTENT_OFFLINE)
 
+// `gatsby serve` only serves public/, but it still loads gatsby-config.js.
+// It never sources content, so it must not demand a project ID.
+const isServeCommand = (env) => env.gatsby_executing_command === 'serve'
+
 const isPreviewEnabled = (env) =>
   (env.KONTENT_PREVIEW_ENABLED || '').trim().toLowerCase() === 'true'
 
@@ -23,7 +27,7 @@ const parseLanguageCodenames = (raw) => {
 }
 
 const kontentSourceOptions = (env) => {
-  if (isOfflineMode(env)) {
+  if (isOfflineMode(env) || isServeCommand(env)) {
     return {
       projectId: OFFLINE_PROJECT_ID,
       languageCodenames: FIXTURE_LANGUAGES,
