@@ -9,8 +9,8 @@ class ArticleTemplateDetails extends React.Component {
     const articleTemplateData = this.props
     const subtitle = articleTemplateData.data.kontentItemSiteMetadata.elements.subtitle.value
     const author = articleTemplateData.data.kontentItemAuthor
-    const article = this.props.data.allKontentItemArticle.nodes[0].elements
-    const articleId = this.props.data.allKontentItemArticle.nodes[0].system.id
+    const article = this.props.data.kontentItemArticle.elements
+    const articleId = this.props.data.kontentItemArticle.system.id
     const tags = article.tags.value
 
     const homeBlock = (
