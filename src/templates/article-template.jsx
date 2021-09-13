@@ -73,7 +73,8 @@ export const pageQuery = graphql`
         }
       }
     }
-    kontentItemArticle(elements: {slug: {value: {eq: $slug}}}){
+    allKontentItemArticle(filter: {elements: {slug: {value: {eq: $slug}}}}, sort: {fields: elements___date___value, order: DESC}) {
+      nodes {
         system {
           id
         }
@@ -125,6 +126,7 @@ export const pageQuery = graphql`
             value
           }
         }
+      }
     }
   }
 `
