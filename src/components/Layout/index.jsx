@@ -3,7 +3,6 @@ import { StaticQuery, graphql } from "gatsby"
 import Helmet from 'react-helmet'
 import '../../assets/scss/init.scss'
 import KontentSmartLink from '@kentico/kontent-smart-link';
-import '@kentico/kontent-smart-link/dist/kontent-smart-link.styles.css'
 
 const Layout = ({ children }) => {
   useEffect(() => {
