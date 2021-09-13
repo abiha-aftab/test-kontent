@@ -7,7 +7,7 @@ import ArticleTemplateDetails from '../components/ArticleTemplateDetails'
 class ArticleTemplate extends React.Component {
   render() {
     const title = this.props.data.kontentItemSiteMetadata.elements.title.value
-    const article = this.props.data.allKontentItemArticle.nodes[0]
+    const article = this.props.data.kontentItemArticle
 
     return (
       <Layout>
@@ -73,58 +73,56 @@ export const pageQuery = graphql`
         }
       }
     }
-    allKontentItemArticle(filter: {elements: {slug: {value: {eq: $slug}}}}, sort: {fields: elements___date___value, order: DESC}) {
-      nodes {
-        system {
-          id
+    kontentItemArticle(elements: {slug: {value: {eq: $slug}}}) {
+      system {
+        id
+      }
+      elements {
+        category {
+          value {
+            ... on kontent_item_category {
+              elements {
+                title {
+                  value
+                }
+                slug {
+                  value
+                }
+              }
+            }
+          }
         }
-        elements {
-          category {
-            value {
-              ... on kontent_item_category {
-                elements {
-                  title {
-                    value
-                  }
-                  slug {
-                    value
-                  }
+        date {
+          value
+        }
+        description {
+          value
+        }
+        content {
+          value
+        }
+        slug {
+          value
+        }
+        tags {
+          value {
+            ... on kontent_item_tag {
+              system {
+                codename
+              }
+              elements {
+                title {
+                  value
+                }
+                slug {
+                  value
                 }
               }
             }
           }
-          date {
-            value
-          }
-          description {
-            value
-          }
-          content {
-            value
-          }
-          slug {
-            value
-          }
-          tags {
-            value {
-              ... on kontent_item_tag {
-                system {
-                  codename
-                }
-                elements {
-                  title {
-                    value
-                  }
-                  slug {
-                    value
-                  }
-                }
-              }
-            }
-          }
-          title {
-            value
-          }
+        }
+        title {
+          value
         }
       }
     }
