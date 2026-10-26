@@ -1,3 +1,9 @@
+> **Note:** a learning project from 2021, based on Kentico's
+> [gatsby-starter-kontent-lumen](https://github.com/Kentico/gatsby-starter-kontent-lumen) starter.
+> I used it to learn Gatsby with Kentico Kontent before the client sites
+> ([THV-Headless](https://github.com/abiha-aftab/THV-Headless), [yourhearvalve](https://github.com/abiha-aftab/yourhearvalve)).
+> The starter's original README follows.
+
 # Gatsby Starter Kontent Lumen
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Kentico/gatsby-kontent-starter-lumen/master/LICENSE)
